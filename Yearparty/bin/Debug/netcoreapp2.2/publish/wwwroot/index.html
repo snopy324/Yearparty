@@ -1,0 +1,389 @@
+<!doctype html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <title>Title</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        div {
+            position: absolute;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(top, #ffffff, rgba(51, 51, 51, 0.5)), url('./GOLD.png') center bottom no-repeat;
+            background: -moz-linear-gradient(top, #ffffff, rgba(51, 51, 51, 0.5)), url('./GOLD.png') center bottom no-repeat;
+            background: -webkit-linear-gradient(top, #ffffff, rgba(51, 51, 51, 0.5)), url('./GOLD.png') center bottom no-repeat;
+        }
+
+        .blocker>img {
+            opacity: .5;
+        }
+
+        .machine {
+            z-index: 100;
+            border: 50px solid #28a745;
+            top: 150px;
+            left: 12.5%;
+            height: 600px;
+            width: 75%;
+            border-radius: 15px;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .pill1 {
+            z-index: 99;
+            border: 6px solid #28a745;
+            left: 33%;
+            height: 500px;
+            border-radius: 15px;
+
+        }
+
+        .pill2 {
+            z-index: 99;
+            border: 6px solid #28a745;
+            left: 67%;
+            height: 500px;
+            border-radius: 15px;
+        }
+
+        #winnerBack {
+            z-index: -100;
+            top: 205px;
+            height: 100px;
+            width: 100%;
+        }
+
+        .nameFont {
+            font-family: Microsoft JhengHei;
+        }
+
+        .idFont {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        img {
+            image-orientation: from-image;
+        }
+
+        #logo {
+            position: absolute;
+            top: 1000px;
+            left: 1500px;
+            margin-left: 0px;
+            background-repeat: no-repeat;
+            z-index: 1;
+            width: 600px;
+            height: 84px;
+            margin-top: 20px;
+            background: url(./logowithname.png);
+            background-size: cover !important;
+            background-position: center center;
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+    <div id="logo" style="background: url(logowithname.png);"></div>
+
+    <div class="machine">
+        <div class="pill1"></div>
+        <div class="pill2"></div>
+        <div id="winnerBack"></div>
+
+
+        <div style="top:0; width: 100%;">
+            <div id="empid" style="top:0; width: 67%;"> </div>
+        </div>
+
+        <div style="top:0px; left:67%; width: 33%;">
+            <img id="empphoto" src="" style="height: 500px; width: 100%;">
+        </div>
+
+    </div>
+
+    <div style="top: 800px; width: 100%;">
+        <input type="button" value="Click" onclick="draw('animateDraw')" />
+        <input type="button" value="Quick" onclick="draw()" />
+        <input type="button" value="Test200" onclick="startTesting(100)" />
+        <input type="button" value="Play" onclick="playGoogleTrans()" />
+    </div>
+
+    <!-- <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js').then(function (registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }).catch(function (err) {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script> -->
+
+
+
+    <script>
+
+        let rewardList = [
+            { name: '1000元禮卷', amount: 100 },
+            { name: '2000元禮卷', amount: 30 },
+            { name: '3000元禮卷', amount: 20 },
+            { name: '5000元禮卷', amount: 10 },
+            { name: '10000元禮卷', amount: 5 },
+            { name: '20000元', amount: 1 },
+        ];
+        let winnerList = [];
+        let DataBase = [];
+        let RamdomList = [];
+        let empList = [];
+        let filePath = 'photos';
+        let fontSize = 100;
+        let fps = 60;
+
+        let openDraw = true;
+        var stepPX = [95, 90, 90, 90, 90, 85, 80, 75, 70, 65, 60, 55, 50, 50, 45, 40, 35, 30, 25, 20, 15, 10, 10, 10, 10, 5];
+        // stepPX = stepPX.concat(stepPX);
+        // stepPX = stepPX.sort(function (a, b) { return a - b });
+        // stepPX = stepPX.reverse();
+        let BasicRowStep = 20; //need to define random range 40~60?
+        let lastPic = 0;
+        let indexSum = -1;
+        const reducer = (accumlator, currentValue) => accumlator + currentValue;
+
+
+        loadData();
+
+
+        function loadData() {
+            $.ajax({
+                url: `${window.origin}/api/winning`,
+                method: 'GET',
+                success: (data) => {
+                    DataBase = data;
+                    createRamdonData();
+                    addData(100);
+                    empList = $('#empid').children().toArray().map(e => Number(e.innerText.substring(0, 5)));
+                    if ($('#empphoto').attr('src') === '') {
+                        $('#empphoto').attr('src', `${window.origin}/${filePath}/${empList[2]}.png`);
+                        $('#empphoto').attr('title', `${window.origin}/${filePath}/${empList[2]}.png`);
+                    }
+                }
+            })
+        }
+
+
+        function createRamdonData() {
+            RamdomList = RamdomList.concat(DataBase
+                .map((a) => ({ sort: Math.random(), value: a }))
+                .sort((a, b) => a.sort - b.sort)
+                .map((a) => a.value));
+        }
+
+
+        function addData(count = 1) {
+
+            for (let i = 1; i <= count; i++) {
+                let emp = RamdomList.pop();
+                let idEle = $('<div></div>').text(emp.empid.toString().padStart(5, '0')).width('50%').css('text-align', 'center').addClass('idFont');
+                let nameEle = $('<div></div>').text(emp.empname.substring(0, 5)).width('50%').css('left', '50%').css('text-align', 'center').addClass('nameFont');
+                $('#empid').append($('<div></div>').offset({
+                    top: (i + indexSum) * fontSize,
+                }).css('zIndex', -10)
+                    .width('100%')
+                    .css('font-size', `${fontSize - 30}px`).append(idEle, nameEle));
+            }
+
+            indexSum += count;
+
+        }
+
+
+        function sendWinningData(emp) {
+            $.ajax({
+                url: `${window.origin}/api/winning`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(emp),
+                success: (result) => {
+                    if (!result) {
+                        // alert('Error');
+                        console.warn(emp);
+                    }
+                    //TODO
+                    openDraw = true;
+                }
+            })
+        }
+
+
+        function draw(method) {
+            $('#winnerBack').css('background-color', 'white');
+            if (!openDraw) {
+                return;
+            }
+            openDraw = false;
+            nowPicNum = 2;
+            rowStep = BasicRowStep;
+            moveStep = BasicRowStep;
+            empList = $('#empid').children().toArray().map(e => Number(e.innerText.substring(0, 5)));
+
+            if (method === 'animateDraw') {
+                rowStep = rowStep + stepPX.length;
+                moveStep = method === 'animateDraw' ? BasicRowStep + stepPX.reduce(reducer) / fontSize : BasicRowStep;
+            }
+
+            for (let t = 0; t <= rowStep - 1; t++) {
+                setTimeout(() => {
+                    let px = t >= BasicRowStep ? stepPX[t - BasicRowStep] : fontSize;
+                    $("#empid").animate({ top: `-=${px}`, }, fps, "linear", function () {
+                        if (Math.round($('#empid').position().top / fontSize) !== lastPic) {
+                            $('#empphoto').attr('src', `${filePath}/${empList[nowPicNum]}.png`);
+                            $('#empphoto').attr('title', `${window.origin}/${filePath}/${empList[nowPicNum]}.png`);
+                            lastPic = Math.round($('#empid').position().top / fontSize);
+                            nowPicNum++;
+                            addData(1);
+                        }
+                        if (t + 1 === rowStep) {
+                            var WinnerId = $($('#empid').children().toArray()[moveStep + 2]);
+                            $('#empphoto').attr('src', `${filePath}/${Number(WinnerId.text().substring(0, 5))}.png`);
+                            setTimeout(() => {
+                                finishedDraw(method, WinnerId);
+                            }, fps / 2);
+                        }
+                    });
+                }, fps * t)
+            }
+
+        }
+
+
+        function finishedDraw(method, WinnerId) {
+            var px = method === 'animateDraw' ? BasicRowStep + stepPX.reduce(reducer) / fontSize : BasicRowStep;
+
+            $('#winnerBack').css('background-color', 'yellow');
+            removeEles(px);
+
+            // TODO 抓獎項
+            var emp = {
+                empid: Number(WinnerId.text().substring(0, 5)),
+                empname: '',
+                reward: rewardList[0].name
+            };
+            console.log(WinnerId.text())
+            playGoogleTrans(WinnerId.text());
+            //Check DataBase List length
+            $($('#empid').children().toArray().filter(e => e.innerText == WinnerId.text()).slice(1)).remove();
+            RamdomList = RamdomList.filter(e => e.empid !== emp.empid);
+            DataBase = DataBase.filter(e => e.empid !== emp.empid);
+            sortEles();
+            sendWinningData(emp);
+
+            if (RamdomList.length < 200) {
+                createRamdonData();
+            }
+        }
+
+
+        function removeEles(count) {
+            indexSum -= count;
+            $($('#empid').children().toArray().slice(0, count)).remove();
+        }
+
+
+        function sortEles() {
+            $('#empid').offset({ top: 200 });
+            $('#empid').children().toArray().forEach((element, index) => {
+                $(element).offset({ top: (index + 2) * fontSize })
+            });
+        }
+
+
+        //========================================================================================================================
+        function startTesting(times) {
+            for (let t = 1; t <= times; t++) {
+                setTimeout(() => {
+                    draw();
+                    console.log('Draw Time ' + t);
+                }, t * (fps * BasicRowStep + 500))
+            }
+        }
+
+        // startTesting(100);
+        // setTimeout(() => {
+        //     $.ajax({
+        //         url: `${window.origin}/api/winning/CollectData`,
+        //         method: 'GET',
+        //         success: () => {
+        //             window.location.reload();
+        //         }
+        //     })
+        // }, 210 * (fps * BasicRowStep + 500));
+        //========================================================================================================================
+
+
+        $('#empphoto').attr('src', 'https://localhost:5001/IMG_0658.PNG')
+
+    </script>
+
+
+
+    <div id="speech">
+        <!-- <audio controls autoplay="autoplay">
+            <source src="translate_tts.mp3"
+                type="audio/mpeg">
+        </audio> -->
+    </div>
+
+    <script>
+        function playGoogleTrans(texttospeech = 'translate_tts') {
+            var docFrag = document.createDocumentFragment();
+            docFrag = $('<audio></audio>').attr('autoplay', 'autoplay');
+            let fileName = `/audios/${texttospeech}.mp3`;
+            docFrag.html($('<source></source>').attr('src', fileName).attr('type', 'audio/mpeg'));
+            $('#speech').html(docFrag);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+</body>
+
+
+
+</html>

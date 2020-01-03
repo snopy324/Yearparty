@@ -1,0 +1,208 @@
+﻿<!doctype html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap-reboot.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="./css/shoulder.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/shoulder.js"></script>
+    <script src="js/html2canvas.js"></script>
+
+
+
+</head>
+
+
+
+<body>
+
+    <div style="width: 100%; height: 100vh;">
+        <iframe id="frame" src="zoomin.html" style="width: 100%; height: 100vh;"></iframe>
+    </div>
+
+    <container>
+
+        <div id="equation" class="done" style="z-index: 1000; top: 470px;left: 94.65%;">
+            <div id="shoulder" class="rotate">
+                <div id="arm"></div>
+            </div>
+        </div>
+
+
+        <!-- <div id="Toplogo"></div> -->
+        <div id="Bottomlogo" onclick="changeRewardInDraw()"></div>
+        <div id="RewardNameCount" data-toggle="modal" data-target=".modal" onclick="modalReset()" hidden>
+            <div id="rewardName">XXXXXXXX獎</div>
+            <div id="rewardAmount">共0位</div>
+            <div id="rewardnumberToSendOut">第x位 </div>
+        </div>
+
+        <div class="machine">
+            <div class="pill1"></div>
+            <div class="pill2"></div>
+            <div id="winnerBack"></div>
+
+            <div style="top:0; width: 100%;">
+                <div id="empid" style="top:0; width: 67%;"> </div>
+            </div>
+
+            <div class="fill" id="canvas" style="top:0px; left:67.5%; width: 30.5%;">
+                <div id="empphoto" style="height:500px ;width:100%"></div>
+            </div>
+
+        </div>
+
+        <div class="rewardBox">
+            <div id="rewardList"></div>
+        </div>
+
+        <div id="speech">
+            <audio autoplay="autoplay" id="audioplayer"></audio>
+            <audio autoplay="autoplay" id="bgm" loop></audio>
+        </div>
+
+        <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <h3>新增獎項</h3>
+                    <div class="row">
+                        <div class="col-4">獎項名稱：</div>
+                        <div class="col-8"> <input id="addRwName" type="text" class="form-control"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">獎項數目：</div>
+                        <div class="col-8"> <input id="addRwAmount" type="number" class="form-control"></div>
+                    </div>
+                    <div class="btn-group">
+                        <input class="btn btn-primary" type="button" value="新增" onclick="addRw()" />
+                        <input class="btn btn-danger" type="button" value="取消" onclick="cancelModal()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </container>
+
+    <script>
+
+        let myName = getCookie('username') || 'Ben';
+
+        function setCookie(cname, cvalue, exhours) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exhours * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function logIn() {
+            if (getCookie('username') === 'undefined' || getCookie('username') === null || getCookie('username') === '') {
+                setCookie('username', '', -1);
+            }
+
+            myName = getCookie('username') || 'Ben';
+
+            if (!myName) {
+                myName = window.prompt('我是 (請好好取名我之後撈LOG要用');
+                if (!myName) {
+                    return;
+                }
+            }
+
+            setCookie('username', myName, 0.5)
+
+            $.ajax({
+                url: `${window.origin}/api/winning/login?name=${myName}`,
+                method: 'GET',
+                success: (data) => {
+                    if (data !== myName) {
+                        alert(`${data}  正在測試`);
+                        return;
+                    }
+                    loadData();
+                    loadRewardedData();
+                },
+                error: (err) => {
+                    console.warn(err)
+                    alert('出事了! 請看Read Me!!!');
+                }
+            })
+        }
+
+        function logOut() {
+            if (window.confirm('回傳測試數據並退出?')) {
+                $.ajax({
+                    url: `${window.origin}/api/winning/logOut`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(winnerList),
+                    success: (s) => {
+                        if (s) {
+                            alert('已回傳數據!!感謝測試');
+                            setCookie('username', '', -1);
+                            window.location.reload();
+                        }
+                    },
+                    error: (err) => {
+                        console.warn(err)
+                        alert('出事了! 請看Read Me!!!');
+                    }
+                })
+            }
+        }
+
+        function resetDatas() {
+            if (window.confirm('確定要刷新資料庫?')) {
+                $.ajax({
+                    url: `${window.origin}/api/winning/resetData`,
+                    method: 'GET',
+                    success: (data) => {
+                        window.location.reload();
+                    },
+                    error: () => {
+                        alert('出事了! 請看Read Me!!!');
+                    }
+                })
+            }
+        }
+
+        function readMe() {
+            window.open(`${window.origin}/readme.html`);
+        }
+
+    </script>
+
+    <script src="./js/mainScript.js"></script>
+
+</body>
+
+
+
+</html>

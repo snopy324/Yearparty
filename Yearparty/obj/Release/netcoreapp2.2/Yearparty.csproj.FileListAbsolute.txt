@@ -1,0 +1,14 @@
+C:\Users\Ben\Desktop\Yearparty\Yearparty\bin\Release\netcoreapp2.2\Yearparty.deps.json
+C:\Users\Ben\Desktop\Yearparty\Yearparty\bin\Release\netcoreapp2.2\Yearparty.runtimeconfig.json
+C:\Users\Ben\Desktop\Yearparty\Yearparty\bin\Release\netcoreapp2.2\Yearparty.runtimeconfig.dev.json
+C:\Users\Ben\Desktop\Yearparty\Yearparty\bin\Release\netcoreapp2.2\Yearparty.dll
+C:\Users\Ben\Desktop\Yearparty\Yearparty\bin\Release\netcoreapp2.2\Yearparty.pdb
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.csproj.CoreCompileInputs.cache
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.RazorAssemblyInfo.cache
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.RazorAssemblyInfo.cs
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.AssemblyInfoInputs.cache
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.AssemblyInfo.cs
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.RazorTargetAssemblyInfo.cache
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.dll
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.pdb
+C:\Users\Ben\Desktop\Yearparty\Yearparty\obj\Release\netcoreapp2.2\Yearparty.csprojAssemblyReference.cache

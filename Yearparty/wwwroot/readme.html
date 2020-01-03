@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>README</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+
+    <style>
+        div {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>
+        README 1.0.0
+    </h1>
+
+
+    <div>
+        <h1>流程</h1>
+        <p>1.登入沒有看到資料顯示，代表尚未登入</p>
+        <p>2.開啟網頁先登入!!!(LOG 會需要用到姓名)</p>
+        <p>3.點 "TEST" 開始抽獎</p>
+        <p>4.抽完名單會停止，換獎項可用 "F5"、"換獎項"、"TEST"</p>
+        <p>5.Reset Datas 會將所有中獎名單清除，將會從 "1000元禮卷" 重來</p>
+        <p>6.請在結束前Log Out，不然其他人不能進行測試</p>
+    </div>
+
+
+
+    <div>
+        <h1>注意事項</h1>
+        <p>0.一次只能一個人進行測試</p>
+        <p>1.目前後臺名單總共200位 </p>
+        <p>2.獎項為</p>
+        let rewardList = [<br>
+        { name: '1000元禮卷', amount: 50, numberToSendOut: 0, method: '' },<br>
+        { name: '3000元禮卷', amount: 20, numberToSendOut: 0, method: '' },<br>
+        { name: '5000元禮卷', amount: 10, numberToSendOut: 0, method: '' },<br>
+        { name: '10000元禮卷', amount: 5, numberToSendOut: 0, method: 'animateDraw' },<br>
+        { name: '20000元', amount: 1, numberToSendOut: 0, method: 'animateDraw' },<br>
+        ];<br>
+        <p>3.資料每次並不會重新整理，請大家盡量在抽到把5000元的都抽完再 "Reset Data"</p>
+        <h3 style="color: red;"> 4.如果遇到中間停下或是奇怪的問題請將 "務必在最後點選 Log Out 將資料回傳並告知黃子君" (可以的話幫我看一下console有沒有紅字 log)</h3>
+        <h3 style="color: red;"> 5.如果遇到中間停下或是奇怪的問題請將 "務必在最後點選 Log Out 將資料回傳並告知黃子君" (可以的話幫我看一下console有沒有紅字 log)</h3>
+        <h3 style="color: red;"> 6.如果遇到中間停下或是奇怪的問題請將 "務必在最後點選 Log Out 將資料回傳並告知黃子君" (可以的話幫我看一下console有沒有紅字 log)</h3>
+        <p> 7.Alert("出事了")</p>
+        首先確認是否放置網頁很久沒動，因為我伺服器架在免費平台 <br>
+        半小時沒人存取就會進入休眠狀態，需要約半分鐘時間讓他甦醒 <br>
+        若非以上問題請告知黃子君
+    </div>
+
+    <div>
+        <h1>各按鈕功能</h1>
+        <p>REAMME : 看看read me!</p>
+        <p>Reset Datas : 重製中獎名單</p>
+        <p>Log In : 登入並存入Cookie，Expiration設為 0.5 hr</p>
+        <p>Log Out : 登出並回傳數據，清除Cookies</p>
+        <p>大獎 : 抽獎 前面三種會直接抽到完，等到大獎要一個個抽。</p>
+        <p>換獎項 : 當前獎項用完時，點選可以切換到下個獎項</p>
+        <p>1000元禮卷 第1位：可以新增獎項，該獎項只在該次有效Request當中有效，會被加在20000元後面</p>
+    </div>
+</body>
+
+</html>

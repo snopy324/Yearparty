@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <style>
+        img {
+            height: 200px;
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+
+        let DataBase = [];
+
+        $.ajax({
+            url: `${window.origin}/api/winning`,
+            method: 'GET',
+            success: (data) => {
+                data = data.filter(d => d.empid < 90000);
+                DataBase = data.map(d => d.empid.toString().padStart(5, '0'));
+                DataBase.forEach(d => {
+                    $('body').append($(`<img src="/photos/${d}.PNG">`));
+                    $('body').append($(`<img src="/fixOrien/${d}.PNG">`));
+
+                });
+                // photoEle.css('background-image', 'url(logos/logowithsname.png)')
+            }
+        })
+
+    </script>
+</body>
+
+</html>
